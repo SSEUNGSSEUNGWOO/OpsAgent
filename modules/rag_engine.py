@@ -21,9 +21,12 @@ class RAGEngine:
     def __init__(self, collection_name: str = DEFAULT_COLLECTION_NAME):
         self.collection_name = collection_name
         self.client = chromadb.PersistentClient(path=VECTOR_DB_PATH)
-        self.ef = embedding_functions.SentenceTransformerEmbeddingFunction(
-            model_name=EMBEDDING_MODEL
-        )
+        try:
+            self.ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+                model_name=EMBEDDING_MODEL
+            )
+        except Exception:
+            self.ef = embedding_functions.DefaultEmbeddingFunction()
         self.collection = self.client.get_or_create_collection(
             name=self.collection_name,
             embedding_function=self.ef,

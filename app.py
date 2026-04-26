@@ -1234,13 +1234,18 @@ FG-001 클렌징밤 최근 수요 추이 그래프 그려줘</code>
             if _brief_exhausted:
                 st.button("브리핑 생성", use_container_width=True, disabled=True, key="btn_brief_top")
             elif st.button("브리핑 생성", type="primary", use_container_width=True, key="btn_brief_top"):
+                _briefing_ok = False
                 with st.spinner("4개 섹션 분석 중... (약 20~30초)"):
                     try:
                         st.session_state.briefing_cards = _generate_briefing_cards()
                         st.session_state.chat_api_calls += 1
+                        _briefing_ok = True
                     except Exception as _e:
+                        import traceback
                         st.error(f"브리핑 생성 실패: {_e}")
-                st.rerun()
+                        st.code(traceback.format_exc())
+                if _briefing_ok:
+                    st.rerun()
 
         if st.session_state.briefing_cards:
             _bc_x_col, _ = st.columns([1, 4])
